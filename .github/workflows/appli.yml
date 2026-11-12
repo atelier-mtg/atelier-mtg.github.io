@@ -40,6 +40,26 @@ jobs:
       - name: Appli
         run: python outils/atelier/telephone_site.py site
 
+      # La base de cartes de la recherche (outils/atelier/base_telephone.py) : celle de la fois d'avant, refaite à partir
+      # des fichiers de Scryfall chaque semaine ou dès qu'une édition a de nouvelles cartes, puis publiée avec l'appli.
+      - name: Base de cartes (celle de la fois d'avant)
+        uses: actions/cache/restore@v4
+        with:
+          path: outils/atelier/base_cartes.json.gz
+          key: base-cartes-${{ github.run_id }}
+          restore-keys: base-cartes-
+
+      - id: base
+        name: Base de cartes
+        run: python outils/atelier/base_telephone.py site/base
+
+      - name: Base de cartes (gardée pour la fois suivante)
+        if: steps.base.outputs.refaite == 'oui'
+        uses: actions/cache/save@v4
+        with:
+          path: outils/atelier/base_cartes.json.gz
+          key: base-cartes-${{ github.run_id }}
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
