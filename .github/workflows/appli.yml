@@ -1,0 +1,48 @@
+# L'appli du téléphone de l'Atelier MTG, https://atelier-mtg.github.io/ : fabriquée à partir du dépôt de l'Atelier
+# (PierreRibeaucourt/atelier-mtg, outils/atelier/telephone_site.py) et publiée sur GitHub Pages.
+# Réglage du dépôt : Settings › Pages › Source : GitHub Actions.
+name: Appli du téléphone
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 */3 * * *"          # toutes les trois heures : les nouveautés de l'Atelier arrivent seules
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  appli:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: PierreRibeaucourt/atelier-mtg
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pillow (icônes)
+        run: python -m pip install --disable-pip-version-check pillow==12.3.0
+
+      - name: Appli
+        run: python outils/atelier/telephone_site.py site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: publication
+        uses: actions/deploy-pages@v4
