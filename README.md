@@ -1,9 +1,5 @@
-# Atelier MTG sur téléphone
+# Atelier MTG : l'ancienne adresse de l'appli
 
-L'appli du téléphone de l'[Atelier MTG](https://github.com/PierreRibeaucourt/atelier-mtg) : https://atelier-mtg.github.io/
+L'appli de l'[Atelier MTG](https://github.com/PierreRibeaucourt/atelier-mtg) a déménagé : https://app.atelier-mtg.com/ (dépôt [atelier-mtg/app](https://github.com/atelier-mtg/app)).
 
-Ce dépôt ne contient que la recette (`.github/workflows/appli.yml`) : l'appli est fabriquée à partir du dépôt de l'Atelier (`outils/atelier/telephone_site.py`) et publiée sur GitHub Pages, à chaque envoi ici et toutes les trois heures.
-
-Elle est publiée avec la base de cartes de la recherche (`base/`, fabriquée par `outils/atelier/base_telephone.py`), refaite chaque semaine à partir des fichiers publics de [Scryfall](https://scryfall.com/docs/api/bulk-data). Les textes et images des cartes appartiennent à Wizards of the Coast ; l'Atelier MTG n'est ni produit ni approuvé par Wizards of the Coast.
-
-Pour l'installer : dans l'Atelier du PC, Options › Téléphone.
+Ce dépôt publie à https://atelier-mtg.github.io/ une passerelle (`outils/atelier/telephone_site.py --passerelle`) : elle emporte vers la nouvelle adresse les decks gardés par le navigateur à l'ancienne, ou y renvoie aussitôt.

@@ -1,7 +1,8 @@
-# L'appli du téléphone de l'Atelier MTG, https://atelier-mtg.github.io/ : fabriquée à partir du dépôt de l'Atelier
-# (PierreRibeaucourt/atelier-mtg, outils/atelier/telephone_site.py) et publiée sur GitHub Pages.
+# L'ancienne adresse de l'appli de l'Atelier MTG, https://atelier-mtg.github.io/ : une passerelle vers
+# https://app.atelier-mtg.com/ (dépôt atelier-mtg/app), qui emporte les decks gardés par le navigateur ; fabriquée à partir
+# du dépôt de l'Atelier (outils/atelier/telephone_site.py --passerelle) et publiée sur GitHub Pages.
 # Réglage du dépôt : Settings › Pages › Source : GitHub Actions.
-name: Appli du téléphone
+name: Passerelle
 
 on:
   push:
@@ -34,31 +35,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Pillow (icônes)
-        run: python -m pip install --disable-pip-version-check pillow==12.3.0
-
-      - name: Appli
-        run: python outils/atelier/telephone_site.py site
-
-      # La base de cartes de la recherche (outils/atelier/base_telephone.py) : celle de la fois d'avant, refaite à partir
-      # des fichiers de Scryfall chaque semaine ou dès qu'une édition a de nouvelles cartes, puis publiée avec l'appli.
-      - name: Base de cartes (celle de la fois d'avant)
-        uses: actions/cache/restore@v4
-        with:
-          path: outils/atelier/base_cartes.json.gz
-          key: base-cartes-${{ github.run_id }}
-          restore-keys: base-cartes-
-
-      - id: base
-        name: Base de cartes
-        run: python outils/atelier/base_telephone.py site/base
-
-      - name: Base de cartes (gardée pour la fois suivante)
-        if: steps.base.outputs.refaite == 'oui'
-        uses: actions/cache/save@v4
-        with:
-          path: outils/atelier/base_cartes.json.gz
-          key: base-cartes-${{ github.run_id }}
+      - name: Passerelle vers app.atelier-mtg.com
+        run: python outils/atelier/telephone_site.py --passerelle site
 
       - uses: actions/upload-pages-artifact@v3
         with:
