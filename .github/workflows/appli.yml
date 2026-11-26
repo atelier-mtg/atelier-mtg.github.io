@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.publication.outputs.page_url }}
+      url: ${{ steps.publication.outputs.page_url || steps.publication2.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,5 +42,16 @@ jobs:
         with:
           path: site
 
+      # GitHub ne retrouve pas toujours l'archive qu'il vient de recevoir (« No artifacts named "github-pages" … Fetching
+      # artifact metadata failed », les 24 et 25 novembre 2026) : une minute plus tard, la publication passe
       - id: publication
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Publication (nouvel essai dans une minute)
+        if: steps.publication.outcome == 'failure'
+        run: sleep 60
+
+      - id: publication2
+        if: steps.publication.outcome == 'failure'
         uses: actions/deploy-pages@v4
